@@ -1,5 +1,29 @@
-@color: #fff;
+@primaryColor: #2196f3;
+@focusColor: #f44336;
+@breakColor: #4caf50;
+
+// This allows us to access our less variables in our JavaScript
+:root {
+  --primary-color: @primaryColor;
+  --focus-color: @focusColor;
+  --break-color: @breakColor;
+}
 
 body {
-  background-color: @color;
+  background-color: @primaryColor;
+  transition: background 1s ease;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+
+  h1 {
+    align-self: center;
+  }
+}
+
+#config {
+  display: flex;
+  flex-direction: column;
 }
