@@ -2,6 +2,7 @@ import * as React from 'react';
 import Countdown from './Countdown';
 
 interface CountdownContainerProps {
+  countdownSeconds: number;
   onFocusDone: Function;
   onPomodoroTick?: Function;
 }
@@ -88,6 +89,7 @@ class CountdownContainer extends React.Component<
       <>
         {this.state.isFocusing ? (
           <Countdown
+            countdownSeconds={this.props.countdownSeconds}
             length={1}
             onComplete={this.handlePomodoroDone}
             onPause={this.handlePomodoroPause}
@@ -97,6 +99,7 @@ class CountdownContainer extends React.Component<
           />
         ) : (
           <Countdown
+            countdownSeconds={this.props.countdownSeconds}
             length={1}
             onComplete={this.handleBreakDone}
             onPause={this.handleBreakPause}

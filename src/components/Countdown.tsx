@@ -2,6 +2,7 @@ import * as React from 'react';
 import Config from './Config';
 
 interface CountdownProps {
+  countdownSeconds: number;
   length: number;
   onComplete: Function;
   onStart?: Function;
@@ -15,7 +16,7 @@ interface CountdownState {
   isRunning: boolean;
   // intervalId: NodeJS.Timeout;
   intervalId: any;
-  countdownSeconds: number;
+  // countdownSeconds: number;
   elapsedSeconds: number;
   input: {
     minutes: string;
@@ -29,7 +30,7 @@ class Countdown extends React.Component<CountdownProps, CountdownState> {
   state = {
     isRunning: false,
     intervalId: 0,
-    countdownSeconds: 25 * 60,
+    // countdownSeconds: 25 * 60,
     shortBreakSeconds: 300,
     elapsedSeconds: 0,
     input: {
@@ -49,7 +50,8 @@ class Countdown extends React.Component<CountdownProps, CountdownState> {
     super(props);
     this.interval = this.DEFAULT_INTERVAL;
 
-    this.state.countdownSeconds = props.length * 60;
+    // TODO FIX?
+    // this.state.countdownSeconds = props.length * 60;
     this.state.input.minutes = props.length.toString();
   }
 
@@ -60,19 +62,21 @@ class Countdown extends React.Component<CountdownProps, CountdownState> {
     if (prevState !== this.state) {
       if (
         this.state.isRunning &&
-        this.state.elapsedSeconds >= this.state.countdownSeconds
+        this.state.elapsedSeconds >= this.props.countdownSeconds
       ) {
         this.reset();
 
         this.props.onComplete();
       }
 
-      if (prevState.input.minutes !== this.state.input.minutes) {
-        this.setState({ countdownSeconds: +this.state.input.minutes * 60 });
-      }
+      // TODO FIX?
+      // if (prevState.input.minutes !== this.state.input.minutes) {
+      //   this.setState({ countdownSeconds: +this.state.input.minutes * 60 });
+      // }
 
+      // TODO FIX?
       const t = new Date(
-        (this.state.countdownSeconds - this.state.elapsedSeconds) * 1000
+        (this.props.countdownSeconds - this.state.elapsedSeconds) * 1000
       )
         .toISOString()
         .substr(11, 8);
@@ -183,7 +187,7 @@ class Countdown extends React.Component<CountdownProps, CountdownState> {
 
   render(): JSX.Element {
     const timeLeft = new Date(
-      (this.state.countdownSeconds - this.state.elapsedSeconds) * 1000
+      (this.props.countdownSeconds - this.state.elapsedSeconds) * 1000
     )
       .toISOString()
       .substr(11, 8);
@@ -193,17 +197,6 @@ class Countdown extends React.Component<CountdownProps, CountdownState> {
     return (
       <>
         <h1>{this.props.title}</h1>
-
-        <input
-          type="number"
-          placeholder="Minutes"
-          name="minutes"
-          value={this.state.input['minutes']}
-          onChange={this.handleInputChange}
-          disabled={this.isRunning}
-          min={5}
-          max={240}
-        />
 
         <h1>{timeLeft}</h1>
 

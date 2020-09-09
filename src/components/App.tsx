@@ -7,20 +7,38 @@ interface AppProps {}
 interface AppState {
   numPomodorosCompleted: number;
   isConfigHidden: boolean;
+  countdownSeconds: number;
 }
 
 class App extends React.Component<AppProps, AppState> {
   state = {
     numPomodorosCompleted: 0,
     isConfigHidden: true,
+    countdownSeconds: 0, // Default 25 min
+  };
+
+  handleConfigClose = (pomodoroDuration: number) => {
+    console.log({ pomodoroDuration });
+    this.setState({ countdownSeconds: pomodoroDuration * 60 });
   };
 
   componentDidMount() {
-    const numPomodorosCompleted = localStorage.getItem(
-      'num_pomodoros_completed'
-    );
-    if (numPomodorosCompleted) {
-      this.setState({ numPomodorosCompleted: +numPomodorosCompleted });
+    try {
+      const configValuesJson = localStorage.getItem('config');
+      const configValues = JSON.parse(configValuesJson);
+      console.log({ configValues });
+
+      const numPomodorosCompleted = localStorage.getItem(
+        'num_pomodoros_completed'
+      );
+
+      this.setState({
+        numPomodorosCompleted: +numPomodorosCompleted,
+        countdownSeconds: configValues.pomodoroDuration * 60,
+      });
+    } catch (error) {
+      // Load the state defaults if there's an error parsing
+      console.log(error);
     }
   }
 
@@ -50,6 +68,10 @@ class App extends React.Component<AppProps, AppState> {
     this.setState({ isConfigHidden: true });
   };
 
+  handleChangeCountdownSeconds = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log('Changing...');
+  };
+
   render() {
     return (
       <div className="container">
@@ -58,6 +80,7 @@ class App extends React.Component<AppProps, AppState> {
             <h1>focus</h1>
             {this.state.numPomodorosCompleted} completed
             <CountdownContainer
+              countdownSeconds={this.state.countdownSeconds}
               onFocusDone={() =>
                 this.setState((prevState) => ({
                   numPomodorosCompleted: prevState.numPomodorosCompleted + 1,
@@ -68,7 +91,12 @@ class App extends React.Component<AppProps, AppState> {
             <button onClick={this.handleConfigShown}>Config</button>
           </>
         ) : (
-          <Config onConfigClose={this.handleConfigHidden} />
+          <Config
+            countdownSeconds={this.state.countdownSeconds}
+            onClose={this.handleConfigClose}
+            onChangeCountdownSeconds={this.handleChangeCountdownSeconds}
+            onConfigClose={this.handleConfigHidden}
+          />
         )}
       </div>
     );
