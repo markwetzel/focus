@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { kebabCaseToCamelCase } from '../utils';
+
+import { kebabCaseToCamelCase } from '../../utils';
 
 interface ConfigProps {
   countdownSeconds: number;
